@@ -1,6 +1,6 @@
 import strutils, std/sha1
 
-proc decodeBase32*(s: string): string =
+proc decodeBase32(s: string): string =
   ## Decodes a base32 string.
   var ch, index, bits, buffer: int = 0
 
@@ -40,7 +40,7 @@ proc decodeBase32*(s: string): string =
       result[index] = chr(buffer shr bits and 255)
       index += 1
 
-proc toString*(data: openarray[byte], start, stop: int): string =
+proc toString(data: openarray[byte], start, stop: int): string =
   ## Slice a raw data blob into a string
   ## This is an inclusive slice
   ## The output string is null-terminated for raw C-compat
@@ -69,7 +69,7 @@ proc int_to_bytestring*(input: int, padding: int = 8): string {.inline.} =
     result[i] = arr[arr.len - i - 1]
 
 
-proc hmac_sha1*(key: string, message: string): SecureHash =
+proc hmac_sha1(key: string, message: string): SecureHash =
 
   # Default block size for sha1
   const blockSize: int = 64
