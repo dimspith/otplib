@@ -11,8 +11,11 @@ type
     hotp: HOTP
     interval: int
 
+
 proc genRandomSecret*(length: int): string =
-  doAssert length > 0, msg="Secret length must not be 0!"
+  ## Generate a random secret. Secrets are randomized using the current time down to nanoseconds as a seed.
+
+  doAssert length > 0, msg = "Secret length must not be 0!"
 
   # Initialize the random number generator
   let now = getTime()
@@ -23,49 +26,56 @@ proc genRandomSecret*(length: int): string =
   result = newString(length)
   for i in 0..<length:
     result[i] = chars[rand(range[0..31])]
-  
 
-# Generate a HOTP code
+
+
 func genHOTP(secret: string, counter: int, digits: int): int =
+  ## Generate a HOTP code
 
   # Calculate the MAC using the supplied secret/counter
-  var hmac = hmac_sha1(decodeBase32(secret), int_to_bytestring(counter)).SHA1Digest
+  var hmac = hmac_sha1(decodeBase32(secret), int_to_bytestring(
+      counter)).SHA1Digest
 
   # Take the 4 LSBs of the MAC and use them as an offset
   let offset = (hmac[19] and 0b1111).int
-  
+
   # Fetch 31 bits starting from hmac[offset]
-  let binaryCode: int = (hmac[offset].int   and 0b1111111)  shl 24 or
+  let binaryCode: int = (hmac[offset].int and 0b1111111) shl 24 or
                         (hmac[offset+1].int and 0b11111111) shl 16 or
-                        (hmac[offset+2].int and 0b11111111) shl 8  or
+                        (hmac[offset+2].int and 0b11111111) shl 8 or
                         (hmac[offset+3].int and 0b11111111)
 
   result = binaryCode mod 10^digits
 
-
-
-# Generate a new HOTP object
 func newHOTP*(secret: string, digits: int = 6): HOTP =
+  ## Generate a new HOTP object
+
   # Length must be 6-10 and 6-8 is recommended
-  doAssert digits in 6..10, msg="Digits must be 6-10 (6-8 is recommended)"
+  doAssert digits in 6..10, msg = "Digits must be 6-10 (6-8 is recommended)"
   result = HOTP(
     secret: secret,
     digits: digits)
 
-# Generate a new TOTP object
+
 func newTOTP*(secret: string, digits: int = 6, interval: int = 30): TOTP =
+  ## Generate a new TOTP object
+
   # Length must be 6-10 and 6-8 is recommended
-  doAssert digits in 6..10, msg="Digits must be 6-10 (6-8 is recommended)"
+  doAssert digits in 6..10, msg = "Digits must be 6-10 (6-8 is recommended)"
   result = TOTP(
     hotp: HOTP(secret: secret, digits: digits),
     interval: interval)
 
-
-## Generate a new HOTP code.
 func gen*(hotp: HOTP, counter: int): int =
-  result =  genHOTP(hotp.secret, counter, hotp.digits)
+  ## Generate a new HOTP code.
+  result = genHOTP(hotp.secret, counter, hotp.digits)
 
-## Generate a new TOTP code.
 proc gen*(totp: TOTP): int =
+  ## Generate a new TOTP code.
   let period = int(epochTime().int / totp.interval)
   result = genHOTP(totp.hotp.secret, period, totp.hotp.digits)
+
+
+proc codeValidFor*(interval: int): int =
+  ## Based on the `interval`, return the seconds until a TOTP code changes.
+  result = 30 - int(epochTime().int mod interval)
