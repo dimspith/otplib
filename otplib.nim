@@ -1,6 +1,8 @@
 ## This module implements One Time Password library.
-import utils, std/sha1, math, std/random
+import std/sha1, math, std/random
 from times import epochTime, getTime, toUnix, nanosecond
+
+import otplib/private/[utils]
 
 # Type definitions of HOTP and TOTP
 type
