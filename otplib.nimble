@@ -4,8 +4,8 @@ version       = "0.1.0"
 author        = "dimspith"
 description   = "OTP library for Nim"
 license       = "Unlicense"
-srcDir        = "src"
 
+skipDirs = @["tests"]
 
 # Dependencies
 
