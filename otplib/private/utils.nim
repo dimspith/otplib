@@ -14,17 +14,17 @@ proc decodeBase32*(s: string): string =
     # Map character to it's base32 symbol chart value
     ch = s[i].ord
     case ch
-    of 65..90:        # A-Z
+    of 65..90: # A-Z
       ch -= 65
-    of 97..122:       # a-z
+    of 97..122: # a-z
       ch -= 97
-    of 50..55:        # 2-7
+    of 50..55: # 2-7
       ch -= 24
     else:
       raise newException(ValueError, "Non-base32 digit found: " & $ch)
 
     # Increase buffer's binary size by 5
-    # i.e 10101 -> 1010100000 
+    # i.e 10101 -> 1010100000
     buffer = buffer shl 5
 
     # Append the character's value
@@ -98,7 +98,8 @@ proc hmac_sha1*(key: string, message: string): SecureHash =
     inPadKey.add(newKey[i] xor 0x36)
 
   # Append message bytes to outPadKey
-  for bt in secureHash(inPadKey.toString(0, inPadKey.len-1) & message).Sha1Digest:
+  for bt in secureHash(inPadKey.toString(0, inPadKey.len-1) &
+      message).Sha1Digest:
     outPadKey.add(bt)
 
   # Calculate the resulting hash
