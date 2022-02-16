@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "dimspith"
-description   = "OTP library for Nim"
+description   = "Easy to use OTP library for Nim"
 license       = "Unlicense"
 
 skipDirs = @["tests"]

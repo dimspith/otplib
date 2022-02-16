@@ -33,7 +33,7 @@ import otplib
 ```
 
 ## Usage
-**See:** [Documentation](https://dimspith.com/docs/otplib)
+**See:** [Documentation](https://dimspith.com/docs/otplib/)
 
 ## Contributing, feature requests and bug reports
 Contributions are welcome 💕
