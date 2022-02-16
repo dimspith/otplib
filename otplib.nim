@@ -11,7 +11,7 @@ type
     secret: string
   TOTP = object
     hotp: HOTP
-    interval: int
+    interval*: int
 
 proc genRandomSecret*(length: int): string =
   ## Generate a random secret. Secrets are randomized using the current time down to nanoseconds as a seed.
