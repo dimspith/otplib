@@ -12,15 +12,30 @@ Multi-factor Authentication standards are defined in:
 
 OTPLIB was inspired by other OTP libraries like [GOTP](https://github.com/xlzd/gotp) and [PyOTP](https://github.com/pyauth/pyotp).
 
-### Installation
+### TODO
+- [ ] Handle Google's key URI format
+- [ ] Add support for more hash modes
 
-The package is not yet published on the nimble directory so to install it directly from github run:
+### Installation
+To install run:
 ```bash
-$ nimble install https://github.com/dimspith/otplib
+$ nimble install otplib
+```
+
+
+To include it in your project add this to your nimble file:
+```nim
+requires "otplib"
+```
+and import it:
+```nim
+import otplib
 ```
 
 ### Usage
-> TODO
+**See:** [Documentation](https://dimspith.com/docs/otplib)
 
-### Contributing
-> TODO
+### Contributing, feature requests and bug reports
+Contributions are welcome 💕
+
+Make sure to run `nimpretty` on your changes to maintain a consistent style.

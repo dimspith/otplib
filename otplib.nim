@@ -1,4 +1,24 @@
-## This module implements One Time Password library.
+## This library handles generation and usage of One Time Passwords (HOTP & TOTP).
+## It aims to be easy to use and easy to read and understand.
+
+runnableExamples:
+  let
+    secret = genRandomSecret(30)
+    totp = newTOTP(secret)
+  echo "Current code: ", totp.gen()
+
+runnableExamples:
+  let
+    secret = genRandomSecret(30)
+    hotp = newHOTP(secret)
+  echo "Code at iteration 1:", hotp.gen(1)
+
+runnableExamples:
+  let
+    secret = genRandomSecret(30)
+    totp = newTOTP(secret)
+  echo "Current code is valid for: ", codeValidFor(totp.interval), " seconds."
+
 import std/sha1, math, std/random
 from times import epochTime, getTime, toUnix, nanosecond
 
@@ -28,8 +48,8 @@ proc genRandomSecret*(length: int): string =
   for i in 0..<length:
     result[i] = chars[rand(range[0..31])]
 
-func genHOTP(secret: string, counter: int, digits: int): int =
-  ## Generate a HOTP code
+func genHOTP(secret: string, counter: int, digits: int = 6): int =
+  ## Generate a HOTP code. Used for generating both HOTP and TOTP codes.
 
   # Calculate the MAC using the supplied secret/counter
   var hmac = hmac_sha1(decodeBase32(secret), int_to_bytestring(
@@ -47,7 +67,8 @@ func genHOTP(secret: string, counter: int, digits: int): int =
   result = binaryCode mod 10^digits
 
 func newHOTP*(secret: string, digits: int = 6): HOTP =
-  ## Generate a new HOTP object
+  ## Generate a new HOTP object.
+  ## By default, `digits = 6`.
 
   # Length must be 6-10 and 6-8 is recommended
   doAssert digits in 6..10, msg = "Digits must be 6-10 (6-8 is recommended)"
@@ -56,7 +77,8 @@ func newHOTP*(secret: string, digits: int = 6): HOTP =
     digits: digits)
 
 func newTOTP*(secret: string, digits: int = 6, interval: int = 30): TOTP =
-  ## Generate a new TOTP object
+  ## Generate a new TOTP object.
+  ## By default, `digits = 6` and `interval = 30`.
 
   # Length must be 6-10 and 6-8 is recommended
   doAssert digits in 6..10, msg = "Digits must be 6-10 (6-8 is recommended)"
@@ -65,14 +87,13 @@ func newTOTP*(secret: string, digits: int = 6, interval: int = 30): TOTP =
     interval: interval)
 
 func gen*(hotp: HOTP, counter: int): int =
-  ## Generate a new HOTP code.
+  ## Generate a new HOTP code with the supplied `counter`.
   result = genHOTP(hotp.secret, counter, hotp.digits)
 
 proc gen*(totp: TOTP): int =
-  ## Generate a new TOTP code.
+  ## Generate a new TOTP code at current time.
   let period = int(epochTime().int / totp.interval)
   result = genHOTP(totp.hotp.secret, period, totp.hotp.digits)
-
 
 proc codeValidFor*(interval: int): int =
   ## Based on the `interval`, return the seconds until a TOTP code changes.
