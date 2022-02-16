@@ -12,11 +12,11 @@ Multi-factor Authentication standards are defined in:
 
 OTPLIB was inspired by other OTP libraries like [GOTP](https://github.com/xlzd/gotp) and [PyOTP](https://github.com/pyauth/pyotp).
 
-### TODO
+## TODO
 - [ ] Handle Google's key URI format
 - [ ] Add support for more hash modes
 
-### Installation
+## Installation
 To install run:
 ```bash
 $ nimble install otplib
@@ -32,10 +32,10 @@ and import it:
 import otplib
 ```
 
-### Usage
+## Usage
 **See:** [Documentation](https://dimspith.com/docs/otplib)
 
-### Contributing, feature requests and bug reports
+## Contributing, feature requests and bug reports
 Contributions are welcome 💕
 
 Make sure to run `nimpretty` on your changes to maintain a consistent style.
