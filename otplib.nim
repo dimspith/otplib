@@ -13,7 +13,6 @@ type
     hotp: HOTP
     interval: int
 
-
 proc genRandomSecret*(length: int): string =
   ## Generate a random secret. Secrets are randomized using the current time down to nanoseconds as a seed.
 
@@ -28,8 +27,6 @@ proc genRandomSecret*(length: int): string =
   result = newString(length)
   for i in 0..<length:
     result[i] = chars[rand(range[0..31])]
-
-
 
 func genHOTP(secret: string, counter: int, digits: int): int =
   ## Generate a HOTP code
@@ -57,7 +54,6 @@ func newHOTP*(secret: string, digits: int = 6): HOTP =
   result = HOTP(
     secret: secret,
     digits: digits)
-
 
 func newTOTP*(secret: string, digits: int = 6, interval: int = 30): TOTP =
   ## Generate a new TOTP object
